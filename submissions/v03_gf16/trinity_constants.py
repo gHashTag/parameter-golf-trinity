@@ -51,7 +51,7 @@ D_MODEL = nearest_fib(144)   # Fib(12) = 144
 N_HEADS = nearest_fib(8)     # Fib(6) = 8
 D_HEAD = D_MODEL // N_HEADS    # 18
 D_FFN = int(D_MODEL * PHI)     # 144 × 1.618 ≈ 232 (near Fib(13)=233)
-N_LAYERS = 9                   # log_φ(budget/layer_size)
+N_LAYERS = 7                   # log_φ(budget/layer_size)
 
 print(f"Trinity Model Dimensions:")
 print(f"  d_model  = {D_MODEL} (Fibonacci)")
