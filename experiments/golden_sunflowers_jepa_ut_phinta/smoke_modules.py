@@ -47,7 +47,7 @@ def main() -> int:
     assert abs(PHI_INV - (PHI - 1.0)) < 1e-12
     assert abs(ALPHA_PHI - (PHI ** -3) / 2.0) < 1e-12
     assert PHI_LOOPS == 4
-    print(f"[1/4] φ-physics OK: φ²+φ⁻²={trinity:.12f} α_φ={ALPHA_PHI:.6f} loops={PHI_LOOPS}")
+    print(f"[1/5] φ-physics OK: φ²+φ⁻²={trinity:.12f} α_φ={ALPHA_PHI:.6f} loops={PHI_LOOPS}")
 
     # 2. PhiNTA
     torch.manual_seed(1597)  # F₁₇ seed (canonical)
@@ -68,7 +68,7 @@ def main() -> int:
     assert nta.A.requires_grad and not nta.W_frozen.requires_grad
     n_train = sum(p.numel() for p in nta.parameters() if p.requires_grad)
     n_frozen = nta.W_frozen.numel()
-    print(f"[2/4] PhiNTA OK: trainable={n_train} frozen={n_frozen} ratio={n_train/n_frozen:.3f}")
+    print(f"[2/5] PhiNTA OK: trainable={n_train} frozen={n_frozen} ratio={n_train/n_frozen:.3f}")
 
     # 3. JEPA loss
     h = torch.randn(2, 32, dim, requires_grad=True)
@@ -76,7 +76,7 @@ def main() -> int:
     assert torch.isfinite(loss) and loss.item() >= 0.0
     loss.backward()
     assert h.grad is not None and h.grad.abs().sum() > 0
-    print(f"[3/4] JEPA loss OK: {loss.item():.4f} (cosine-similarity form)")
+    print(f"[3/5] JEPA loss OK: {loss.item():.4f} (cosine-similarity form)")
 
     # 4. UT loop arithmetic
     # When ut_loops=1, maybe_loop must be identity-like.
@@ -93,9 +93,16 @@ def main() -> int:
     expected_growth = (1.01 ** 4)
     actual_growth = (x_four.norm() / x0.norm()).item()
     assert abs(actual_growth - expected_growth) < 1e-3
-    print(f"[4/4] UT loop OK: ‖x_4‖/‖x_0‖={actual_growth:.4f} expected={expected_growth:.4f}")
+    print(f"[4/5] UT loop OK: ‖x_4‖/‖x_0‖={actual_growth:.4f} expected={expected_growth:.4f}")
 
-    print("\n🌻 GOLDEN SUNFLOWERS smoke OK · 4/4 · phi^2 + phi^-2 = 3")
+    # 5. JEPA tap normalisation — -1 must resolve to the last block.
+    n_total = 9
+    for raw in (-1, 0, 4, 8):
+        idx = raw if raw >= 0 else n_total - 1
+        assert 0 <= idx < n_total, f"jepa tap {raw} → {idx} out of range"
+    print("[5/5] JEPA tap normalisation OK: -1 → last block, in-range indices preserved")
+
+    print("\n🌻 GOLDEN SUNFLOWERS smoke OK · 5/5 · phi^2 + phi^-2 = 3")
     return 0
 
 

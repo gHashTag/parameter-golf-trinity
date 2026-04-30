@@ -1,0 +1,43 @@
+cff-version: 1.2.0
+message: >-
+  If you use the GOLDEN SUNFLOWERS submission stack (JEPA + Universal
+  Transformer + PhiNTA on a φ-physics substrate), please cite this entry
+  and the underlying TRINITY pipeline.
+title: "GOLDEN SUNFLOWERS — JEPA + Universal Transformer + PhiNTA for openai/parameter-golf"
+type: software
+authors:
+  - name: "gHashTag (TRINITY S³AI)"
+    affiliation: "Trinity Project · phi^2 + phi^-2 = 3"
+abstract: >-
+  Composes three openai/parameter-golf wish-list items (JEPA, Universal
+  Transformer, Non-Trainable Adapters on random linear maps) on a single
+  golden-ratio anchored hyperparameter foundation. PhiNTA reproduces
+  trios-trainer-igla src/phi_ortho_init.rs (gain = 1/φ ≈ 0.618); JEPA
+  uses the Robby Goldberg linear-representation form from openai/parameter-
+  golf#1772; Universal Transformer loops a sub-stack round(φ³) = 4 times.
+keywords:
+  - parameter-golf
+  - JEPA
+  - universal transformer
+  - non-trainable adapters
+  - golden ratio
+  - φ-physics
+  - 16MB
+  - language model
+license: MIT
+repository-code: "https://github.com/gHashTag/parameter-golf-trinity"
+references:
+  - type: software
+    title: "trios-trainer-igla — single source of truth for IGLA RACE training"
+    repository-code: "https://github.com/gHashTag/trios-trainer-igla"
+    doi: "10.5281/zenodo.19227877"
+    notes: "Anchor: phi^2 + phi^-2 = 3"
+  - type: generic
+    title: "TRINITY φ-Physics → Model Hyperparameters (Issue #1742)"
+    url: "https://github.com/openai/parameter-golf/issues/1742"
+  - type: generic
+    title: "Experimental JEPA on Robby's PR #1412 (Issue #1772)"
+    url: "https://github.com/openai/parameter-golf/issues/1772"
+  - type: generic
+    title: "GOLDEN SUNFLOWERS — Single Source of Truth (gHashTag/trios#372)"
+    url: "https://github.com/gHashTag/trios/issues/372"

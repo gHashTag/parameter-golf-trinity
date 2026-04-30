@@ -10,6 +10,20 @@ training run on 8×H100 still pending. This directory lives under `experiments/`
 
 ---
 
+## Files in this directory
+
+| File | Purpose |
+|---|---|
+| `train_gpt.py` | Submission training script (1547 LOC, derived from `2026-03-17_LoRA_TTT`) |
+| `smoke_modules.py` | CPU smoke test (5/5 — φ-physics, PhiNTA, JEPA, UT, JEPA-tap normalisation) |
+| `smoke.log` | Last verified smoke run output |
+| `run_sweep.sh` | 5-config × 5-seed sweep over F₁₇..F₂₁ (canonical seeds from trios#372) |
+| `compute_grant.md` | Draft for the openai/parameter-golf compute-grant request form |
+| `CITATION.cff` | Citation metadata referencing trios-trainer-igla Zenodo DOI |
+| `README.md` | This file |
+| `../../chapters/ch0_golden_sunflowers.md` | Theoretical foundation (φ-physics derivation of every constant) |
+| `../../.github/workflows/golden_sunflowers_smoke.yml` | CI — runs smoke on every PR/push touching this folder |
+
 ## What this PR adds
 
 Three wish-list items from `openai/parameter-golf` are wired into a single
@@ -21,7 +35,7 @@ byte-equivalent to the baseline.
 
 | Wish-list item | Module | Env-vars | Default |
 |---|---|---|---|
-| 🌻 **NTA on random linear maps** | `PhiNTA` (frozen φ-OrthoInit basis + LoRA) | `PHINTA_ENABLE`, `PHINTA_RANK`, `PHINTA_INIT_SCALE` | disabled |
+| 🌻 **NTA on random linear maps** | `PhiNTA` (frozen φ-OrthoInit basis + LoRA), pre-head **or** per-block | `PHINTA_ENABLE`, `PHINTA_RANK`, `PHINTA_INIT_SCALE`, `PHINTA_PER_BLOCK` | disabled |
 | 🌻 **JEPA** auxiliary loss (linear-representation form) | `_jepa_loss` | `JEPA_LAMBDA`, `JEPA_MAX_SPAN_FRAC`, `JEPA_START_FRAC`, `JEPA_LAYER` | λ = 0 |
 | 🌻 **Universal Transformer** (φ³ depth recurrence) | `GPT.forward` dispatcher | `UT_LOOPS`, `UT_LAYER_START`, `UT_LAYER_END` | 1 loop |
 | Bonus — **φ-LR scaling** ([#1742](https://github.com/openai/parameter-golf/issues/1742)) | Muon LR multiplier | `PHI_LR_SCALE` | 1.0 |
@@ -116,38 +130,38 @@ Smoke test asserts `PHI**2 + PHI**-2 == 3.0` exactly (modulo fp64).
 
 ```bash
 python experiments/golden_sunflowers_jepa_ut_phinta/smoke_modules.py
-# [1/4] φ-physics OK: φ²+φ⁻²=3.000000000000 α_φ=0.118034 loops=4
-# [2/4] PhiNTA OK: trainable=1664 frozen=4096 ratio=0.406
-# [3/4] JEPA loss OK: 1.6922 (cosine-similarity form)
-# [4/4] UT loop OK: ‖x_4‖/‖x_0‖=1.0406 expected=1.0406
-# 🌻 GOLDEN SUNFLOWERS smoke OK · 4/4 · phi^2 + phi^-2 = 3
+# [1/5] φ-physics OK: φ²+φ⁻²=3.000000000000 α_φ=0.118034 loops=4
+# [2/5] PhiNTA OK: trainable=1664 frozen=4096 ratio=0.406
+# [3/5] JEPA loss OK: 1.6922 (cosine-similarity form)
+# [4/5] UT loop OK: ‖x_4‖/‖x_0‖=1.0406 expected=1.0406
+# [5/5] JEPA tap normalisation OK: -1 → last block, in-range indices preserved
+# 🌻 GOLDEN SUNFLOWERS smoke OK · 5/5 · phi^2 + phi^-2 = 3
 ```
+
+CI runs the same smoke on every PR via
+[.github/workflows/golden_sunflowers_smoke.yml](../../.github/workflows/golden_sunflowers_smoke.yml).
 
 ### Recommended training sweeps (8×H100, 16 MB track)
 
 Canonical Fibonacci seeds **F₁₇..F₂₁ = {1597, 2584, 4181, 6765, 10946}**
 per the GENERAL'S DIRECTIVE in [trios#372](https://github.com/gHashTag/trios/issues/372#issuecomment-2791653601).
 
+Use the bundled sweep script:
+
 ```bash
-# Baseline equivalence (no wish-list items active) — must reproduce 2026-03-17 LoRA-TTT.
-SEED=1597 python train_gpt.py
+# Run all 5 configs across all 5 seeds (baseline / phinta / jepa / ut / all).
+bash experiments/golden_sunflowers_jepa_ut_phinta/run_sweep.sh full
 
-# Sweep 1 · PhiNTA only (NTA wish-list).
-SEED=1597 PHINTA_ENABLE=1 PHINTA_RANK=0 python train_gpt.py
-
-# Sweep 2 · JEPA only (auxiliary loss, λ ∈ {0.05, 0.10, 0.15}).
-SEED=1597 JEPA_LAMBDA=0.10 JEPA_MAX_SPAN_FRAC=0.5 JEPA_START_FRAC=0.05 python train_gpt.py
-
-# Sweep 3 · Universal Transformer (φ³ loops over middle blocks).
-SEED=1597 UT_LOOPS=4 UT_LAYER_START=3 UT_LAYER_END=6 python train_gpt.py
-
-# Sweep 4 · GOLDEN SUNFLOWERS (all three together).
-SEED=1597 \
-  PHINTA_ENABLE=1 \
-  JEPA_LAMBDA=0.10 \
-  UT_LOOPS=4 UT_LAYER_START=3 UT_LAYER_END=6 \
-  python train_gpt.py
+# Or one config at a time:
+bash experiments/golden_sunflowers_jepa_ut_phinta/run_sweep.sh baseline
+bash experiments/golden_sunflowers_jepa_ut_phinta/run_sweep.sh phinta
+bash experiments/golden_sunflowers_jepa_ut_phinta/run_sweep.sh jepa
+bash experiments/golden_sunflowers_jepa_ut_phinta/run_sweep.sh ut
+bash experiments/golden_sunflowers_jepa_ut_phinta/run_sweep.sh all
 ```
+
+Each config writes `train_seed${SEED}.log` next to `train_gpt.py`. Promotion
+to `records/` happens only after a 3-seed mean and std are honest.
 
 ---
 

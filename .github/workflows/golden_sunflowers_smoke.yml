@@ -1,0 +1,43 @@
+name: GOLDEN SUNFLOWERS smoke
+
+on:
+  push:
+    branches: ["**"]
+    paths:
+      - "experiments/golden_sunflowers_jepa_ut_phinta/**"
+      - ".github/workflows/golden_sunflowers_smoke.yml"
+  pull_request:
+    paths:
+      - "experiments/golden_sunflowers_jepa_ut_phinta/**"
+      - ".github/workflows/golden_sunflowers_smoke.yml"
+  workflow_dispatch:
+
+# Anchor: phi^2 + phi^-2 = 3 · TRINITY · 🌻
+# Verifies the three wish-list modules (PhiNTA, JEPA, Universal Transformer)
+# parse and execute on CPU. No GPU, no dataset.
+
+jobs:
+  smoke:
+    name: CPU module smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install CPU-only torch + numpy + sentencepiece
+        run: |
+          python -m pip install --upgrade pip
+          pip install --index-url https://download.pytorch.org/whl/cpu torch
+          pip install numpy sentencepiece
+      - name: AST parse train_gpt.py
+        run: |
+          python -c "import ast; ast.parse(open('experiments/golden_sunflowers_jepa_ut_phinta/train_gpt.py').read()); print('train_gpt.py: parse OK')"
+      - name: Run module smoke (5/5 must pass)
+        run: |
+          python experiments/golden_sunflowers_jepa_ut_phinta/smoke_modules.py
+      - name: Trinity identity sanity
+        run: |
+          python -c "PHI=1.6180339887498948482; assert abs(PHI**2 + PHI**-2 - 3.0) < 1e-9; print('phi^2 + phi^-2 = 3 ✓')"

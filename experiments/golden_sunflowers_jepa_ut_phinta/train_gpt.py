@@ -101,6 +101,9 @@ class Hyperparameters:
     phinta_enable = bool(int(os.environ.get("PHINTA_ENABLE", "0")))
     phinta_rank = int(os.environ.get("PHINTA_RANK", 0))  # 0 → round(model_dim / φ)
     phinta_init_scale = float(os.environ.get("PHINTA_INIT_SCALE", 0.6180339887498948))  # 1/φ
+    # PHINTA_PER_BLOCK=0  → single PhiNTA on the pre-head residual (default).
+    # PHINTA_PER_BLOCK=1  → one PhiNTA per Block, applied after MLP residual.
+    phinta_per_block = bool(int(os.environ.get("PHINTA_PER_BLOCK", "0")))
 
     # JEPA: linear-representation auxiliary loss (Issue #1772, after Robby PR #1412).
     # context = (h[a-1] - h[0]) + (h[T-1] - h[b]),  patch = h[b] - h[a-1]
@@ -694,6 +697,9 @@ class Block(nn.Module):
         attn_out = self.attn(n, qd, vd)
         x = x + self.attn_scale.to(dtype=x.dtype)[None, None, :] * attn_out
         x = x + self.mlp_scale.to(dtype=x.dtype)[None, None, :] * self.mlp(self.mlp_norm(x))
+        # GOLDEN SUNFLOWERS — optional per-block PhiNTA residual (NTA wish-list).
+        if getattr(self, "phinta", None) is not None:
+            x = x + self.phinta(x)
         return x
 
 
@@ -789,6 +795,7 @@ class GPT(nn.Module):
         phinta_enable: bool = False,
         phinta_rank: int = 0,
         phinta_init_scale: float = PHI_INV,
+        phinta_per_block: bool = False,
         jepa_lambda: float = 0.0,
         jepa_max_span_frac: float = 0.5,
         jepa_layer: int = -1,
@@ -828,9 +835,19 @@ class GPT(nn.Module):
         self.ut_layer_start = int(ut_layer_start)
         self.ut_layer_end = int(ut_layer_end)
 
-        # GOLDEN SUNFLOWERS — PhiNTA pre-head adapter.
+        # GOLDEN SUNFLOWERS — PhiNTA placement.
+        # phinta_enable=True alone → single adapter on the pre-head residual.
+        # phinta_enable=True AND phinta_per_block=True → one adapter per Block,
+        #   applied after the MLP residual. Pre-head adapter is then disabled.
         self.phinta_enable = bool(phinta_enable)
-        self.phinta = PhiNTA(model_dim, phinta_rank, phinta_init_scale) if self.phinta_enable else None
+        self.phinta_per_block = bool(phinta_per_block) and self.phinta_enable
+        if self.phinta_enable and not self.phinta_per_block:
+            self.phinta = PhiNTA(model_dim, phinta_rank, phinta_init_scale)
+        else:
+            self.phinta = None
+        if self.phinta_per_block:
+            for blk in self.blocks:
+                blk.phinta = PhiNTA(model_dim, phinta_rank, phinta_init_scale)
 
         # GOLDEN SUNFLOWERS — JEPA aux-loss configuration.
         self.jepa_lambda = float(jepa_lambda)
@@ -857,17 +874,26 @@ class GPT(nn.Module):
         # times in sequence, sharing weights across passes (φ³ ≈ 4 default).
         ut_active = self.ut_loops > 1 and self.ut_layer_end > self.ut_layer_start
 
+        # GOLDEN SUNFLOWERS — normalised JEPA tap index (-1 → last block).
+        num_layers_total = self.num_encoder_layers + self.num_decoder_layers
+        jepa_tap_idx = self.jepa_layer if self.jepa_layer >= 0 else num_layers_total - 1
+        h_tap: Tensor | None = None
+
         def run_block(bi: int, x_in: Tensor) -> Tensor:
             qd = lora.q_loras[bi] if lora else None
             vd = lora.v_loras[bi] if lora else None
             return self.blocks[bi](x_in, x0, qd, vd)
 
         def maybe_loop(bi: int, x_in: Tensor) -> Tensor:
+            nonlocal h_tap
             if ut_active and self.ut_layer_start <= bi < self.ut_layer_end:
                 for _ in range(self.ut_loops):
                     x_in = run_block(bi, x_in)
-                return x_in
-            return run_block(bi, x_in)
+            else:
+                x_in = run_block(bi, x_in)
+            if bi == jepa_tap_idx:
+                h_tap = x_in
+            return x_in
 
         # First half stores skips; second half reuses them in reverse order.
         for i in range(self.num_encoder_layers):
@@ -879,8 +905,9 @@ class GPT(nn.Module):
                 x = x + self.skip_weights[i].to(dtype=x.dtype)[None, None, :] * skips.pop()
             x = maybe_loop(bi, x)
 
-        # GOLDEN SUNFLOWERS — capture JEPA tap (final pre-norm by default).
-        h_tap = x  # jepa_layer == -1 → final pre-norm representation.
+        # Fall back to the final hidden state if jepa_tap_idx was out of range.
+        if h_tap is None:
+            h_tap = x
 
         x = self.final_norm(x)
         # GOLDEN SUNFLOWERS — PhiNTA pre-head adapter (NTA wish-list).
@@ -1233,6 +1260,7 @@ def main() -> None:
         phinta_enable=args.phinta_enable,
         phinta_rank=args.phinta_rank,
         phinta_init_scale=args.phinta_init_scale,
+        phinta_per_block=args.phinta_per_block,
         jepa_lambda=args.jepa_lambda,
         jepa_max_span_frac=args.jepa_max_span_frac,
         jepa_layer=args.jepa_layer,
