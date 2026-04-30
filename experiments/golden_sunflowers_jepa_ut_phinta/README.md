@@ -26,6 +26,12 @@ training run on 8×H100 still pending. This directory lives under `experiments/`
 | `run_sweep.sh` | 5-config × 5-seed sweep over F₁₇..F₂₁ (canonical seeds from trios#372) |
 | `compute_grant.md` | Draft for the openai/parameter-golf compute-grant request form |
 | `CITATION.cff` | Citation metadata referencing trios-trainer-igla Zenodo DOI |
+| `reproducibility.lock.json` | Pinned commit SHAs + numeric constants (PhD-style lock) |
+| `experiment_map.csv` | GS-INV-1..9 ↔ PhD anchor table (style of `trios/docs/phd/experiment_map.csv`) |
+| `PHD_LINKAGE.md` | One-screen navigation bridge to the 44-chapter PhD monograph |
+| `theorems/GoldenSunflowers.v` | Coq module — 2 Qed + 2 Admitted (compiles with `coqc 8.18+`) |
+| `theorems/_CoqProject` | Coq project file for IDE / CI integration |
+| `Makefile` | `make verify` runs parse + smoke + equivalence + cff + coq |
 | `README.md` | This file |
 | `../../chapters/ch0_golden_sunflowers.md` | Theoretical foundation (φ-physics derivation of every constant) |
 | `../../.github/workflows/golden_sunflowers_smoke.yml` | CI — runs smoke on every PR/push touching this folder |
@@ -146,6 +152,17 @@ python experiments/golden_sunflowers_jepa_ut_phinta/smoke_modules.py
 
 CI runs the same smoke on every PR via
 [.github/workflows/golden_sunflowers_smoke.yml](../../.github/workflows/golden_sunflowers_smoke.yml).
+
+### Local full verify (smoke + equivalence + cff + coqc)
+
+```bash
+cd experiments/golden_sunflowers_jepa_ut_phinta
+make verify
+# train_gpt.py: parse OK
+# 5/5 smoke + 3/3 equivalence + CITATION valid + theorems/GoldenSunflowers.v: coqc OK (2 Qed)
+```
+
+Requires `coqc 8.18+` for the proof step (the rest is pure Python + cffconvert).
 
 ### Recommended training sweeps (8×H100, 16 MB track)
 

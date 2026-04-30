@@ -1,0 +1,68 @@
+{
+  "$schema": "https://github.com/gHashTag/trios/blob/main/docs/phd/reproducibility.lock.json",
+  "anchor": "phi^2 + phi^-2 = 3",
+  "submission": "GOLDEN SUNFLOWERS — JEPA + Universal Transformer + PhiNTA",
+  "status": "PROPOSAL — UNTRAINED",
+  "track": "track_non_record_16mb",
+  "pr": "gHashTag/parameter-golf-trinity#2",
+  "git": {
+    "this_repo_branch": "feat/golden-sunflowers-jepa-universal-nta",
+    "this_repo_sha": "ac9441eb44357901b3174c8f82c819875a1ea49d",
+    "baseline_record_path": "records/track_10min_16mb/2026-03-17_LoRA_TTT/train_gpt.py",
+    "baseline_state_dict_sha256_prefix": "511dbc0164e03b1b"
+  },
+  "phd_monograph": {
+    "repo": "gHashTag/trios",
+    "sha": "d07dcf31178d4b4d59e7afdd18f41d53e18701d4",
+    "path": "docs/phd",
+    "chapters_total": 44,
+    "canonical_qed_theorems": 297,
+    "chapters_cited": ["Ch.3", "Ch.4", "Ch.5", "Ch.11"],
+    "external_lr_certification": "experiment_map.csv:L8 INV-1lr / lr_phi_band (Proven)"
+  },
+  "phi_rust_sot": {
+    "repo": "gHashTag/trios-trainer-igla",
+    "sha": "3ec0eb42a6a5b4874cbc43f10cb95ae4c393a4b3",
+    "file": "src/phi_ortho_init.rs"
+  },
+  "t27_standards": {
+    "repo": "gHashTag/t27",
+    "sha": "990814a9fd61e4c6d96d9d8bfc53f6dd726331cb",
+    "documents": [
+      "docs/nona-02-organism/SACRED-PHYSICS-001.md",
+      "docs/nona-02-organism/NUMERIC-STANDARD-001.md",
+      "docs/nona-03-manifest/PHI_LOOP_CONTRACT.md"
+    ]
+  },
+  "constants": {
+    "phi": 1.6180339887498948482,
+    "phi_inv": 0.6180339887498948482,
+    "phi_inv_cube": 0.2360679774997896964,
+    "alpha_phi": 0.118033988749894848,
+    "phi_loops": 4,
+    "trinity_identity": 3.0,
+    "matrix_lr_baseline": 0.04,
+    "phi_lr_scale_gauge_regime": 2.9508497187473713,
+    "phinta_init_scale": 0.6180339887498948,
+    "phinta_default_rank_divisor": "round(model_dim / phi)"
+  },
+  "canonical_seeds": {
+    "source": "gHashTag/trios docs/phd/chapters/11-pre-registration (H1) + Ch.5",
+    "fibonacci": [1597, 2584, 4181, 6765, 10946],
+    "lucas_fallback": [29, 47],
+    "fibonacci_indices": ["F_17", "F_18", "F_19", "F_20", "F_21"],
+    "lucas_indices": ["L_7", "L_8"]
+  },
+  "verification": {
+    "smoke_module_checks": 5,
+    "baseline_equivalence_checks": 3,
+    "coq_theorems_provable": 2,
+    "coq_theorems_admitted": 2,
+    "ci_workflow": ".github/workflows/golden_sunflowers_smoke.yml"
+  },
+  "honest_nonclaims": [
+    "No submission.json is shipped — no BPB has been measured.",
+    "No file under records/ is modified.",
+    "All wish-list env-vars default to no-op; baseline state_dict bytes match."
+  ]
+}

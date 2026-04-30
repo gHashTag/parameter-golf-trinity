@@ -9,3 +9,10 @@ data/docs_selected.jsonl
 .mypy_cache/
 .venv
 logs/
+# GOLDEN SUNFLOWERS Coq build artefacts
+experiments/golden_sunflowers_jepa_ut_phinta/theorems/*.vo
+experiments/golden_sunflowers_jepa_ut_phinta/theorems/*.vos
+experiments/golden_sunflowers_jepa_ut_phinta/theorems/*.vok
+experiments/golden_sunflowers_jepa_ut_phinta/theorems/*.glob
+experiments/golden_sunflowers_jepa_ut_phinta/theorems/.*.aux
+experiments/golden_sunflowers_jepa_ut_phinta/theorems/.nra.cache

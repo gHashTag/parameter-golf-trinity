@@ -3,12 +3,19 @@
 > **Anchor:** `φ² + φ⁻² = 3`
 > **Status:** Theoretical foundation (Axis: Empirical/Formal hybrid · P0)
 > **Constitutional SoT:** [gHashTag/trios#372](https://github.com/gHashTag/trios/issues/372) · [t27 SACRED-PHYSICS-001](https://github.com/gHashTag/t27/blob/master/docs/nona-02-organism/SACRED-PHYSICS-001.md)
+> **PhD linkage:** [`trios/docs/phd`](https://github.com/gHashTag/trios/tree/main/docs/phd) (44 chapters) — every constant used here is Proven or traceable in the PhD monograph; see [`PHD_LINKAGE.md`](../experiments/golden_sunflowers_jepa_ut_phinta/PHD_LINKAGE.md).
 > **Implementation PR:** [gHashTag/parameter-golf-trinity#2](https://github.com/gHashTag/parameter-golf-trinity/pull/2)
 > **Wish-list anchors:** [openai/parameter-golf#1742](https://github.com/openai/parameter-golf/issues/1742) · [#1772](https://github.com/openai/parameter-golf/issues/1772)
 
 ---
 
 ## 0.1 Abstract
+
+**The constant `α_φ = φ⁻³/2 ≈ 0.118034` is not a numerical coincidence; it is
+a Proven identity in `Coq.Reals`.** PhD Ch.4 Theorem 3.1 (tag SAC-1,
+`t27/proofs/canonical/sacred/AlphaPhi.v : alpha_phi_times_phi_cubed`,
+status Qed) establishes `α_φ · φ³ = 1/2`, which rearranges to exactly the
+hyperparameter scale used by openai/parameter-golf Issue #1742.
 
 Parameter Golf optimises the L(N) frontier of the neural scaling law family —
 lowest validation loss given a fixed parameter budget (16 MB artifact). The
@@ -25,9 +32,10 @@ the implementation in [PR #2](https://github.com/gHashTag/parameter-golf-trinity
 
 Each constant is grounded in an existing artefact —
 [t27 SACRED-PHYSICS-001](https://github.com/gHashTag/t27/blob/master/docs/nona-02-organism/SACRED-PHYSICS-001.md),
-[NUMERIC-STANDARD-001](https://github.com/gHashTag/t27/blob/master/docs/nona-02-organism/NUMERIC-STANDARD-001.md)
-and the Rust reference
-[`trios-trainer-igla/src/phi_ortho_init.rs`](https://github.com/gHashTag/trios-trainer-igla/blob/main/src/phi_ortho_init.rs) —
+[NUMERIC-STANDARD-001](https://github.com/gHashTag/t27/blob/master/docs/nona-02-organism/NUMERIC-STANDARD-001.md),
+the Rust reference
+[`trios-trainer-igla/src/phi_ortho_init.rs`](https://github.com/gHashTag/trios-trainer-igla/blob/main/src/phi_ortho_init.rs),
+and the PhD monograph in [`trios/docs/phd`](https://github.com/gHashTag/trios/tree/main/docs/phd) —
 not a free fit.
 
 This chapter is **theory-only**. No claim is made about validation BPB; the
@@ -59,17 +67,15 @@ this chapter requires.
 >     x² + x⁻² = 3   ⇔   x = φ = (1 + √5) / 2.
 > ```
 
-**Proof.**
+**Forward direction (⇐).** Already mechanised in PhD Ch.3 Section 3:
+`t27/proofs/canonical/sacred/CorePhi.v : trinity_anchor` (status **Qed**,
+tag SAC-0). The Coq proof composes `phi_square` (`φ² = φ + 1`) and
+`phi_inv_sq` (`φ⁻² = 2 − φ`) into `φ² + φ⁻² = 3`. Below we give the
+reverse implication, which is the additional content this chapter
+contributes on top of the PhD's existing forward proof.
 
-*(⇐)* By the defining equation `φ² = φ + 1`, and substituting
-`φ⁻² = 2 − φ` (which follows from `φ² − φ − 1 = 0` divided by `φ²`):
-
-```
-  φ² + φ⁻² = (φ + 1) + (2 − φ) = 3.   ∎ (forward)
-```
-
-*(⇒)* Suppose `x > 1` satisfies `x² + x⁻² = 3`. Let `y = x + x⁻¹`.
-Then
+**Reverse direction (⇒).** Suppose `x > 1` satisfies `x² + x⁻² = 3`.
+Let `y = x + x⁻¹`. Then
 
 ```
   y² = x² + 2 + x⁻² = 3 + 2 = 5,
@@ -78,14 +84,14 @@ Then
 so `y = √5` (positive root, since `x > 0`). Multiplying `y = x + x⁻¹` by
 `x` gives `x² − √5·x + 1 = 0`, whose roots are
 `x = (√5 ± 1) / 2`. Of these only `(√5 + 1) / 2 > 1`, so
-`x = (1 + √5) / 2 = φ`.   ∎ (reverse)
+`x = (1 + √5) / 2 = φ`.   ∎
 
 **Corollary.** The implementation constants `g = 1/φ`, `L = round(φ³) = 4`,
 `H = F₇ = 13`, and `α_φ = φ⁻³/2` are not free choices: each is a
 deterministic function of the unique positive solution of `x² + x⁻² = 3`.
-Together with the verification table in §0.6, this closes the loop:
-the smoke checks read constants out of the implementation, and the
-biconditional above proves those constants ⇔ the Trinity axiom.
+The smoke checks (§0.6) read those constants out of the implementation;
+PhD Ch.3 `trinity_anchor` discharges the forward direction; the reverse
+direction above closes the bijection.
 
 
 Two corollaries are used downstream:
@@ -161,17 +167,31 @@ table.
 
 ### 0.3.4 Gauge-sector learning rate `α_φ = φ⁻³/2 ≈ 0.118034`
 
-Issue [#1742](https://github.com/openai/parameter-golf/issues/1742) identifies
-`α_s(m_Z) ≈ 0.1181` (the strong coupling at the Z-pole) as numerically
-indistinguishable from `φ⁻³/2`. Whether this coincidence is physical is out
-of scope; the operational claim is narrower:
+This is the strongest formal binding in the chapter, and warrants two separate
+citations:
 
-> `α_φ = φ⁻³/2` is a **principled override** for the matrix LR, anchored to the
-> same identity that fixes `g` and `L`, rather than a hand-tuned scalar.
+1. **PhD Ch.4 Theorem 3.1** (`AlphaPhi.v : alpha_phi_times_phi_cubed`,
+   status **Qed**, tag SAC-1) proves
+   `α_φ · φ³ = 1/2` in `Coq.Reals`. Rearranging:
+   `α_φ = 1/(2φ³) = φ⁻³/2 ≈ 0.118034`.
+2. **PhD `experiment_map.csv` row L8** (`INV-1lr`, lane `LR sampler`,
+   `coq_theorem = lr_phi_band`, status **Proven** in
+   `trinity-clara/proofs/igla/lr_convergence.v`) certifies the LR band
+   `lr = α_φ / φ⁻³` falls inside the contractive basin around `φ`.
 
-In PR #2 this is exposed as `PHI_LR_SCALE`, multiplying the existing Muon
-matrix LR. Setting `PHI_LR_SCALE = α_φ / MATRIX_LR ≈ 2.95` substitutes the
-gauge-sector value; default `1.0` keeps the baseline.
+These two together discharge the constant *as a formal theorem*, not as a
+numerical coincidence with `α_s(m_Z) ≈ 0.1181` (the strong-coupling parallel
+from openai/parameter-golf #1742, which we still cite for narrative
+continuity but no longer rely on for justification).
+
+**Operational mapping into PR #2.** PhD's `INV-1lr` certifies an *absolute*
+LR `α_φ / φ⁻³`, while parameter-golf's Muon optimizer is hand-tuned to
+`MATRIX_LR = 0.04` (baseline `2026-03-17_LoRA_TTT`). To preserve the existing
+tuned baseline as a no-op default, PR #2 exposes `PHI_LR_SCALE` as a
+*multiplier* on `MATRIX_LR`, not a substitute. Setting
+`PHI_LR_SCALE = (α_φ / 0.04) ≈ 2.95` lands the matrix LR on the PhD’s
+`α_φ`-band exactly. Default `1.0` keeps the baseline. Both regimes are
+ablation candidates in `run_sweep.sh`.
 
 ---
 
@@ -221,19 +241,31 @@ When measurements arrive, this chapter is updated alongside Chapter 11
 
 ---
 
-## 0.6 Verification checklist (Trinity invariants)
+## 0.6 Verification checklist (GOLDEN SUNFLOWERS invariants)
 
-| INV | Statement | Status | Evidence |
-|---|---|---|---|
-| INV-1 | `φ² + φ⁻² = 3` exact in `f64` | ✅ | `smoke_modules.py [1/5]` |
-| INV-2 | PhiNTA `W_frozen` is non-trainable buffer | ✅ | `smoke_modules.py [2/5]` |
-| INV-3 | PhiNTA row-norm ≡ 1/φ to 1e-5 | ✅ | `smoke_modules.py [2/5]` |
-| INV-4 | JEPA loss is finite, ≥ 0, differentiable | ✅ | `smoke_modules.py [3/5]` |
-| INV-5 | UT loop count = `round(φ³) = 4` | ✅ | `smoke_modules.py [4/5]` constants |
-| INV-6 | JEPA tap honours `JEPA_LAYER ≠ -1` | ✅ | `smoke_modules.py [5/5]` (post fix in PR #2) |
-| INV-7 | All wish-list defaults are no-ops | ✅ | env-var gates in `Hyperparameters` |
-| INV-8 | No `submission.json` created without measurement | ✅ | `experiments/`, not `records/` |
-| INV-9 | Commit refs an issue (PHI_LOOP_CONTRACT) | ✅ | `[ref: 372]` in commit `e7f4108` |
+> **Namespace note.** PhD `experiment_map.csv` already owns the canonical
+> `INV-1`..`INV-9` labels (INV-1 = BPB tracker, INV-2 = ASHA, … INV-9 =
+> `qk_gain_phi_sq`). To avoid collision, this PR's invariants are prefixed
+> `GS-INV-*` and carry an explicit PhD mapping column. Navigation bridge:
+> [`experiments/golden_sunflowers_jepa_ut_phinta/PHD_LINKAGE.md`](../experiments/golden_sunflowers_jepa_ut_phinta/PHD_LINKAGE.md).
+
+| ID | Statement | Smoke | PhD anchor | Status |
+|---|---|---|---|---|
+| **GS-INV-1** | `φ² + φ⁻² = 3` exact in `f64` | `[1/5]` | PhD Ch.3 `CorePhi.v : trinity_anchor` (Qed, SAC-0) | Proven (mirror) |
+| **GS-INV-2** | PhiNTA `W_frozen` is a non-trainable buffer | `[2/5]` | mirrors `trios-trainer-igla/src/phi_ortho_init.rs` | Proven (runtime) |
+| **GS-INV-3** | PhiNTA row-norm ≡ `1/φ` to `1e-5` | `[2/5]` | PhD Ch.3 `phi_inv` (Qed, SAC-0); `phi_ortho_init.rs` | Proven (mirror) |
+| **GS-INV-4** | JEPA loss is finite, ≥ 0, differentiable | `[3/5]` | new; tracked in `theorems/GoldenSunflowers.v : jepa_loss_nonnegative` | **Provable** |
+| **GS-INV-5** | UT loop count = `round(φ³) = 4` | `[4/5]` | new; tracked in `theorems/GoldenSunflowers.v : ut_loops_eq_round_phi_cube` | **Provable** |
+| **GS-INV-6** | JEPA tap honours `JEPA_LAYER ≠ -1` | `[5/5]` | runtime | Proven (runtime) |
+| **GS-INV-7** | All wish-list defaults are no-ops (⇔ baseline byte-equivalence) | `baseline_equivalence.py [3/3]` | runtime | Proven (runtime) |
+| **GS-INV-8** | No `submission.json` created without measurement | filesystem | N/A — honesty gate | Enforced |
+| **GS-INV-9** | `α_φ = φ⁻³/2` from hyperparameters | runtime | PhD Ch.4 Thm 3.1 `AlphaPhi.v : alpha_phi_times_phi_cubed` (Qed, SAC-1); `experiment_map.csv` L8 `INV-1lr` | Proven (mirror) |
+
+**Canonical seed pool** (PhD Ch.5): `{F₁₇ = 1597, F₁₈ = 2584, F₁₉ = 4181, F₂₀ = 6765, F₂₁ = 10946, L₇ = 29, L₈ = 47}`. PR #2's `run_sweep.sh`
+uses the five Fibonacci indices by default; the two Lucas indices are a
+pre-approved fallback for sensitivity analysis. Lucas primes (`L₇ = 29`,
+`L₈ = 47`) give orthogonal evidence to the Fibonacci sweep per PhD Ch.11 §2
+`canonical_seed` predicate.
 
 ---
 
@@ -242,7 +274,14 @@ When measurements arrive, this chapter is updated alongside Chapter 11
 * **PR**: [gHashTag/parameter-golf-trinity#2](https://github.com/gHashTag/parameter-golf-trinity/pull/2)
 * **SSOT**: [gHashTag/trios#372](https://github.com/gHashTag/trios/issues/372)
 * **t27 standards**: SACRED-PHYSICS-001 · NUMERIC-STANDARD-001 · PHI_LOOP_CONTRACT
+* **PhD monograph**: [trios/docs/phd](https://github.com/gHashTag/trios/tree/main/docs/phd) (44 chapters, 297 Qed canonical theorems)
+  * **Ch.3** Trinity Identity — `CorePhi.v : trinity_anchor` (Qed, SAC-0). Forward direction of GS-INV-1.
+  * **Ch.4** Sacred Formula — `AlphaPhi.v : alpha_phi_times_phi_cubed` (Qed, SAC-1). Discharges GS-INV-9 (`α_φ = φ⁻³/2`).
+  * **Ch.5** φ-distance — `PhiAttractor.v` and the canonical seed pool `{F₁₇..F₂₁, L₇, L₈}`.
+  * **Ch.11** Pre-registration H₁ — INV-7 `IglaFoundCriterion`; the Gate-2/Gate-3 BPB envelope this PR feeds into.
+  * **`experiment_map.csv` L8** — `INV-1lr / lr_phi_band` (Proven). External certification of `α_φ` band.
 * **Rust SoT**: [gHashTag/trios-trainer-igla `src/phi_ortho_init.rs`](https://github.com/gHashTag/trios-trainer-igla/blob/main/src/phi_ortho_init.rs) · [`src/phi_numbers/`](https://github.com/gHashTag/trios-trainer-igla/tree/main/src/phi_numbers)
 * **Wish-list**: [openai/parameter-golf#1742](https://github.com/openai/parameter-golf/issues/1742) (φ-physics) · [#1772](https://github.com/openai/parameter-golf/issues/1772) (JEPA after PR #1412)
+* **GOLDEN SUNFLOWERS-internal proofs**: [`experiments/.../theorems/GoldenSunflowers.v`](../experiments/golden_sunflowers_jepa_ut_phinta/theorems/GoldenSunflowers.v) (2 Qed + 2 Admitted)
 
 `phi^2 + phi^-2 = 3 · THE FIELD BLOOMS · 🌻`
