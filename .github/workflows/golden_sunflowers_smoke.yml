@@ -48,3 +48,7 @@ jobs:
       - name: Trinity identity sanity
         run: |
           python -c "PHI=1.6180339887498948482; assert abs(PHI**2 + PHI**-2 - 3.0) < 1e-9; print('phi^2 + phi^-2 = 3 ✓')"
+      # Coq proofs are verified locally via `make coq` / `make verify`.
+      # Not wired into CI per maintainer request (apt install + coqc adds
+      # ~30 s, opam image adds 5–10 min; CPU smoke already covers the
+      # runtime invariants that matter on every push).
