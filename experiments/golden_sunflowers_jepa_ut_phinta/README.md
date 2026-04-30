@@ -1,8 +1,9 @@
 # 🌻 GOLDEN SUNFLOWERS — JEPA + Universal Transformer + PhiNTA
 
 [![smoke](https://github.com/gHashTag/parameter-golf-trinity/actions/workflows/golden_sunflowers_smoke.yml/badge.svg?branch=feat%2Fgolden-sunflowers-jepa-universal-nta)](https://github.com/gHashTag/parameter-golf-trinity/actions/workflows/golden_sunflowers_smoke.yml)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19227877.svg)](https://doi.org/10.5281/zenodo.19227877)
 [![Anchor: phi^2 + phi^-2 = 3](https://img.shields.io/badge/anchor-%CF%86%C2%B2%2B%CF%86%E2%81%BB%C2%B2%3D3-d4af37)](https://github.com/gHashTag/t27/blob/master/docs/nona-02-organism/SACRED-PHYSICS-001.md)
+[![PhD chapters](https://img.shields.io/badge/PhD%20chapters-44-d4af37)](https://github.com/gHashTag/trios/tree/main/docs/phd)
+[![Coq theorems](https://img.shields.io/badge/Coq-2%20Qed%20%2B%202%20Admitted-success)](theorems/GoldenSunflowers.v)
 [![Status: untrained proposal](https://img.shields.io/badge/status-untrained%20proposal-orange)](https://github.com/gHashTag/parameter-golf-trinity/pull/2)
 
 **Track:** `track_non_record_16mb` (4-hour, unrestricted-compute slot from

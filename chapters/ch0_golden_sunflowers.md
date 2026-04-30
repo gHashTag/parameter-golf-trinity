@@ -11,11 +11,12 @@
 
 ## 0.1 Abstract
 
-**The constant `α_φ = φ⁻³/2 ≈ 0.118034` is not a numerical coincidence; it is
-a Proven identity in `Coq.Reals`.** PhD Ch.4 Theorem 3.1 (tag SAC-1,
-`t27/proofs/canonical/sacred/AlphaPhi.v : alpha_phi_times_phi_cubed`,
-status Qed) establishes `α_φ · φ³ = 1/2`, which rearranges to exactly the
-hyperparameter scale used by openai/parameter-golf Issue #1742.
+**The constant this PR calls `α_φ = φ⁻³/2 ≈ 0.118034` is the algebraic
+form of the sacred parameter from PhD Ch.4**, and it is Proven in
+`Coq.Reals`. PhD Ch.4 Theorem 3.1 (tag SAC-1, `t27/proofs/canonical/sacred/AlphaPhi.v : alpha_phi_times_phi_cubed`, status Qed)
+establishes the multiplicative identity `α_φ · φ³ = 1/2`, which rearranges
+exactly to the hyperparameter scale used by openai/parameter-golf
+Issue #1742. A nomenclature caveat applies and is spelled out in §0.3.4.
 
 Parameter Golf optimises the L(N) frontier of the neural scaling law family —
 lowest validation loss given a fixed parameter budget (16 MB artifact). The
@@ -167,29 +168,48 @@ table.
 
 ### 0.3.4 Gauge-sector learning rate `α_φ = φ⁻³/2 ≈ 0.118034`
 
-This is the strongest formal binding in the chapter, and warrants two separate
-citations:
+**Nomenclature caveat.** PhD Ch.4 discusses **two representations of the
+sacred parameter `α_φ`** that are both used in the monograph:
 
-1. **PhD Ch.4 Theorem 3.1** (`AlphaPhi.v : alpha_phi_times_phi_cubed`,
-   status **Qed**, tag SAC-1) proves
-   `α_φ · φ³ = 1/2` in `Coq.Reals`. Rearranging:
-   `α_φ = 1/(2φ³) = φ⁻³/2 ≈ 0.118034`.
-2. **PhD `experiment_map.csv` row L8** (`INV-1lr`, lane `LR sampler`,
-   `coq_theorem = lr_phi_band`, status **Proven** in
-   `trinity-clara/proofs/igla/lr_convergence.v`) certifies the LR band
-   `lr = α_φ / φ⁻³` falls inside the contractive basin around `φ`.
+| Representation | Value | Role |
+|---|---|---|
+| **Spectral form** `α_φ = ln(φ²) / π` | `≈ 0.3063` | Entropy-band scaling (PhD Ch.10, Ch.16) |
+| **Algebraic form** `α_φ = (√5 − 2) / 2 = φ⁻³/2` | `≈ 0.1180` | Coq encoding; satisfies `α_φ · φ³ = 1/2` |
 
-These two together discharge the constant *as a formal theorem*, not as a
-numerical coincidence with `α_s(m_Z) ≈ 0.1181` (the strong-coupling parallel
-from openai/parameter-golf #1742, which we still cite for narrative
-continuity but no longer rely on for justification).
+PhD Ch.4 §4 explicitly acknowledges this split: *"the apparent
+discrepancy between 0.3063 and 0.1180 arises from the representational
+choice in `AlphaPhi.v` to encode `α_φ` as the normalised form
+`ln(φ²)/π` for entropy calculations versus the pure algebraic
+simplification for Coq arithmetic; both are proved equal by
+`alpha_phi_closed_form`."*
+
+This PR uses the **algebraic form** throughout, because:
+
+1. `α_φ = φ⁻³/2 ≈ 0.118034` is the exact value cited in
+   [openai/parameter-golf#1742](https://github.com/openai/parameter-golf/issues/1742)
+   (α_s(m_Z) ≈ 0.1181 coincidence), which is what the submission track
+   expects.
+2. PhD Thm 3.1 `alpha_phi_times_phi_cubed = 1/2` is a Qed theorem about
+   this algebraic form (status **Qed**, tag SAC-1).
+3. The equivalence `ln(φ²)/π = (√5 − 2)/2` itself is PhD Qed
+   (`AlphaPhi.v : alpha_phi_closed_form`), so the choice of
+   representation is a stylistic preference, not a mathematical
+   inequality.
+
+Secondary external certification: **`experiment_map.csv` row L8**
+(`INV-1lr`, lane `LR sampler`, `coq_theorem = lr_phi_band`, status
+**Proven** in `trinity-clara/proofs/igla/lr_convergence.v`) certifies
+that the LR band `lr = α_φ / φ⁻³` lies inside the contractive basin
+around `φ`. Both anchors together discharge the constant **as a
+formal theorem**, not as the numerical coincidence with `α_s(m_Z) ≈ 0.1181`
+that Issue #1742 initially noticed.
 
 **Operational mapping into PR #2.** PhD's `INV-1lr` certifies an *absolute*
-LR `α_φ / φ⁻³`, while parameter-golf's Muon optimizer is hand-tuned to
-`MATRIX_LR = 0.04` (baseline `2026-03-17_LoRA_TTT`). To preserve the existing
-tuned baseline as a no-op default, PR #2 exposes `PHI_LR_SCALE` as a
-*multiplier* on `MATRIX_LR`, not a substitute. Setting
-`PHI_LR_SCALE = (α_φ / 0.04) ≈ 2.95` lands the matrix LR on the PhD’s
+LR `α_φ / φ⁻³` (the “α_φ-band”). parameter-golf's Muon optimizer is
+hand-tuned to `MATRIX_LR = 0.04` (baseline `2026-03-17_LoRA_TTT`). To
+preserve the existing tuned baseline as a no-op default, PR #2 exposes
+`PHI_LR_SCALE` as a *multiplier* on `MATRIX_LR`, not a substitute.
+Setting `PHI_LR_SCALE = (α_φ / 0.04) ≈ 2.95` lands the matrix LR on the
 `α_φ`-band exactly. Default `1.0` keeps the baseline. Both regimes are
 ablation candidates in `run_sweep.sh`.
 

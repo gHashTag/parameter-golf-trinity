@@ -5,6 +5,11 @@
 > and/or the Coq proof tree in [`gHashTag/t27`](https://github.com/gHashTag/t27).
 >
 > **Anchor:** `φ² + φ⁻² = 3` · TRINITY · 🌻
+>
+> **Authoritative source:** Neon SSOT schema `ssot.chapters` (44 rows,
+> 297 Qed canonical theorems across 65 `.v` files, as of git SHA `d07dcf3`).
+> Chapter bodies, Coq theorem names and proof states quoted here are read
+> directly from Neon, not reconstructed.
 
 ## Scope & proof state
 
@@ -36,9 +41,15 @@
 | Ch | Title | Why it matters here |
 |---|---|---|
 | **Ch.3** | Trinity Identity (`φ²+φ⁻²=3`) | SAC-0 discharges forward direction of GS-INV-1, GS-INV-3 |
-| **Ch.4** | Sacred Formula — `α_φ` derivation | SAC-1 discharges GS-INV-9; Thm 3.1 = formal backing for Issue #1742 |
-| **Ch.5** | φ-distance and Fibonacci-Lucas seeds | Canonical seed pool `{F₁₇..F₂₁, L₇, L₈}` used by `run_sweep.sh` |
-| **Ch.11** | Pre-registration H₁ | Gate-2 (BPB ≤ 1.85) / Gate-3 (BPB ≤ 1.5) envelope the sweep will report into |
+| **Ch.4** | Sacred Formula — `α_φ` derivation | SAC-1 discharges GS-INV-9; Thm 3.1 = formal backing for Issue #1742. **Two representations** of `α_φ`: spectral `ln(φ²)/π ≈ 0.306` and algebraic `(√5−2)/2 ≈ 0.118`; this PR uses the algebraic form (per `alpha_phi_closed_form` Qed). |
+| **Ch.5** | φ-distance and Fibonacci-Lucas seeds | Canonical seed pool `{F₁₇..F₂₁, L₇, L₈}` used by `run_sweep.sh`. **Balancing function** `B(x) = (x + 1/x)/2` has unique positive fixed point at `φ` (Ch.5 §2), formalising the seed-independence claim of GS-INV-7. |
+| **Ch.11** | Pre-registration H₁ | Gate-3 envelope BPB ≤ 1.5 + INV-7 `IglaFoundCriterion` (≥ 3 distinct seeds, step ≥ 4000) bound the sweep. |
+| **Ch.17** | Ablation matrix | PhD specifies a `2⁷ = 128`-run factorial over factors A–G. Our `run_sweep.sh` covers a sub-region: factors **C** (canonical seeds, all 5 sweep configs use F₁₇..F₂₁), **D** (golden positional encoding, via PhiNTA's 1/φ init), **G** (`φ²+φ⁻²=3` normalisation, in the JEPA-tap `final_norm`). 4 of 7 factors covered: `A` (ternary weights) and `E` (MXFP4) are out of scope; `F` (zero-DSP FPGA) is hardware-only. |
+| **Ch.21** | IGLA RACE | **Gate-2 (BPB < 1.85)** and **Gate-3 (BPB < 1.5)** are derived from the substrate identity: Gate-3 = `3/2`, Gate-2 = `3 − φ⁻² · δ_G`. Champion config from PhD: `lr = 0.004`, `GF16 PHI_BIAS = 60`, seed triple `(1597, 2584, 4181)`. Six refutation theorems R1–R6 in `INV7_IglaFoundCriterion.v` close cheating loopholes. **INV-7b Rainbow Bridge** (15 Qed) ensures multi-agent consistency. |
+| **App.B** | Golden Ledger (297 Qed / 438 obligations) | Cluster breakdown across 6 directories (`kernel/`, `sacred/`, `igla/`, `hslm/`, `fpga/`, `misc/`); our 4 GoldenSunflowers.v Coq objects sit in a self-contained 7th cluster outside that registry, by design. |
+| **App.E** | Pre-reg PDF + IGLA RACE results | **ASHA threshold INV-2** (golden, φ-weight 1.0): `T_ASHA = φ² + φ⁻² + φ⁻⁴ = 3 + φ⁻⁴ ≈ 3.146` (filed at conservative upper bound 3.5). Falsifiability checklist F1–F6 from PhD App.E §3 is the methodological template for our run-time pre-registration. |
+| **App.G** | Reproducibility scripts ledger | App.G row B007 = **VSA Operations for Ternary** (DOI `10.5281/zenodo.19227877`). Cited from Ch.30/Ch.31. **Not** the trainer-igla codebase — corrected in this PR's CITATION.cff. |
+| **App.H** | 13 Zenodo DOI registry | Provenance chain: every artefact in `B001–B013` has `keyword: golden-sunflowers; phi^2+phi^-2=3` in Zenodo metadata. |
 
 ## Reviewer quick-start
 

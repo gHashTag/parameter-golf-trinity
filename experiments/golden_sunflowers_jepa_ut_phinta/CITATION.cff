@@ -33,11 +33,17 @@ references:
   - type: software
     title: "trios-trainer-igla — single source of truth for IGLA RACE training"
     repository-code: "https://github.com/gHashTag/trios-trainer-igla"
+    authors:
+      - alias: "gHashTag"
+        name: "TRINITY S³AI"
+    notes: "Anchor: phi^2 + phi^-2 = 3. Mirrors src/phi_ortho_init.rs into PyTorch."
+  - type: data
+    title: "Trinity Zenodo bundle B007 — VSA Operations for Ternary"
     doi: "10.5281/zenodo.19227877"
     authors:
       - alias: "gHashTag"
         name: "TRINITY S³AI"
-    notes: "Anchor: phi^2 + phi^-2 = 3"
+    notes: "Cross-reference for VSA / ternary operations (PhD Ch.30, App.G ledger row B007). NOT the trainer-igla codebase."
   - type: generic
     title: "TRINITY φ-Physics → Model Hyperparameters (Issue #1742)"
     url: "https://github.com/openai/parameter-golf/issues/1742"
