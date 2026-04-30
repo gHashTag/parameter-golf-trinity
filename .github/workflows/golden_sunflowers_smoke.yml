@@ -38,6 +38,13 @@ jobs:
       - name: Run module smoke (5/5 must pass)
         run: |
           python experiments/golden_sunflowers_jepa_ut_phinta/smoke_modules.py
+      - name: Baseline equivalence (state_dict bytes + forward loss)
+        run: |
+          python experiments/golden_sunflowers_jepa_ut_phinta/baseline_equivalence.py
+      - name: CITATION.cff validate
+        run: |
+          pip install cffconvert
+          cffconvert --validate -i experiments/golden_sunflowers_jepa_ut_phinta/CITATION.cff
       - name: Trinity identity sanity
         run: |
           python -c "PHI=1.6180339887498948482; assert abs(PHI**2 + PHI**-2 - 3.0) < 1e-9; print('phi^2 + phi^-2 = 3 ✓')"

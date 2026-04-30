@@ -1,5 +1,10 @@
 # 🌻 GOLDEN SUNFLOWERS — JEPA + Universal Transformer + PhiNTA
 
+[![smoke](https://github.com/gHashTag/parameter-golf-trinity/actions/workflows/golden_sunflowers_smoke.yml/badge.svg?branch=feat%2Fgolden-sunflowers-jepa-universal-nta)](https://github.com/gHashTag/parameter-golf-trinity/actions/workflows/golden_sunflowers_smoke.yml)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19227877.svg)](https://doi.org/10.5281/zenodo.19227877)
+[![Anchor: phi^2 + phi^-2 = 3](https://img.shields.io/badge/anchor-%CF%86%C2%B2%2B%CF%86%E2%81%BB%C2%B2%3D3-d4af37)](https://github.com/gHashTag/t27/blob/master/docs/nona-02-organism/SACRED-PHYSICS-001.md)
+[![Status: untrained proposal](https://img.shields.io/badge/status-untrained%20proposal-orange)](https://github.com/gHashTag/parameter-golf-trinity/pull/2)
+
 **Track:** `track_non_record_16mb` (4-hour, unrestricted-compute slot from
 [openai/parameter-golf#1742](https://github.com/openai/parameter-golf/issues/1742))
 **Status:** **PROPOSAL — UNTRAINED.** Modules implemented and CPU-smoke-verified;
@@ -16,6 +21,7 @@ training run on 8×H100 still pending. This directory lives under `experiments/`
 |---|---|
 | `train_gpt.py` | Submission training script (1547 LOC, derived from `2026-03-17_LoRA_TTT`) |
 | `smoke_modules.py` | CPU smoke test (5/5 — φ-physics, PhiNTA, JEPA, UT, JEPA-tap normalisation) |
+| `baseline_equivalence.py` | CPU proof: state_dict + forward loss are byte-identical to baseline at defaults |
 | `smoke.log` | Last verified smoke run output |
 | `run_sweep.sh` | 5-config × 5-seed sweep over F₁₇..F₂₁ (canonical seeds from trios#372) |
 | `compute_grant.md` | Draft for the openai/parameter-golf compute-grant request form |

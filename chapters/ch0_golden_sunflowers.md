@@ -50,6 +50,44 @@ Equation **(0.1)** is exact in real arithmetic and stable to within `1e−9` in
 IEEE-754 `f64` (verified by `smoke_modules.py [1/5]`). It is the only axiom
 this chapter requires.
 
+### 0.2.1 Biconditional (the identity uniquely picks `φ`)
+
+> **Theorem (Trinity biconditional).**
+> For `x ∈ ℝ` with `x > 1`,
+>
+> ```
+>     x² + x⁻² = 3   ⇔   x = φ = (1 + √5) / 2.
+> ```
+
+**Proof.**
+
+*(⇐)* By the defining equation `φ² = φ + 1`, and substituting
+`φ⁻² = 2 − φ` (which follows from `φ² − φ − 1 = 0` divided by `φ²`):
+
+```
+  φ² + φ⁻² = (φ + 1) + (2 − φ) = 3.   ∎ (forward)
+```
+
+*(⇒)* Suppose `x > 1` satisfies `x² + x⁻² = 3`. Let `y = x + x⁻¹`.
+Then
+
+```
+  y² = x² + 2 + x⁻² = 3 + 2 = 5,
+```
+
+so `y = √5` (positive root, since `x > 0`). Multiplying `y = x + x⁻¹` by
+`x` gives `x² − √5·x + 1 = 0`, whose roots are
+`x = (√5 ± 1) / 2`. Of these only `(√5 + 1) / 2 > 1`, so
+`x = (1 + √5) / 2 = φ`.   ∎ (reverse)
+
+**Corollary.** The implementation constants `g = 1/φ`, `L = round(φ³) = 4`,
+`H = F₇ = 13`, and `α_φ = φ⁻³/2` are not free choices: each is a
+deterministic function of the unique positive solution of `x² + x⁻² = 3`.
+Together with the verification table in §0.6, this closes the loop:
+the smoke checks read constants out of the implementation, and the
+biconditional above proves those constants ⇔ the Trinity axiom.
+
+
 Two corollaries are used downstream:
 
 | Quantity | Value | Source |
