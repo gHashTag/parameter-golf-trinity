@@ -1,0 +1,6 @@
+[1/4] φ-physics OK: φ²+φ⁻²=3.000000000000 α_φ=0.118034 loops=4
+[2/4] PhiNTA OK: trainable=1664 frozen=4096 ratio=0.406
+[3/4] JEPA loss OK: 1.6922 (cosine-similarity form)
+[4/4] UT loop OK: ‖x_4‖/‖x_0‖=1.0406 expected=1.0406
+
+🌻 GOLDEN SUNFLOWERS smoke OK · 4/4 · phi^2 + phi^-2 = 3
